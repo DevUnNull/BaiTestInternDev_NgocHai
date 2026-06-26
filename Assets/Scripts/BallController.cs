@@ -56,10 +56,12 @@ public class BallController : MonoBehaviour
     private System.Collections.IEnumerator MonitorBallMovement()
     {
         yield return new WaitForSeconds(0.5f);
+        float checkInterval = 0f;
 
         while (isKicked)
         {
-            if (rb != null && rb.velocity.sqrMagnitude < 0.05f)
+            checkInterval += Time.deltaTime;
+            if (rb != null && rb.velocity.sqrMagnitude < 0.05f || checkInterval > 4f)
             {
                 isKicked = false;
                 if (CameraController.Instance != null)
@@ -72,53 +74,35 @@ public class BallController : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void OnGoalScored(Transform goalTransform)
     {
-        CheckGoalCollision(other.gameObject);
-    }
+        if (!isKicked)
+            return;
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        CheckGoalCollision(collision.gameObject);
-    }
+        isKicked = false;
 
-    private void CheckGoalCollision(GameObject other)
-    {
-        if (isKicked)
+        if (monitorCoroutine != null)
         {
- 
-            Transform current = other.transform;
-            Transform goalTransform = null;
+            StopCoroutine(monitorCoroutine);
+            monitorCoroutine = null;
+        }
 
-            while (current != null)
+        if (goalTransform != null)
+        {
+            ParticleSystem[] particleSystems = goalTransform.GetComponentsInChildren<ParticleSystem>(true);
+            foreach (ParticleSystem ps in particleSystems)
             {
-                if (current.name.ToLower().Contains("goal"))
+                if (ps.gameObject.name == "Confetti Explosion - Stars")
                 {
-                    goalTransform = current;
-                    break;
-                }
-                current = current.parent;
-            }
-
-            if (goalTransform != null)
-            {
-                isKicked = false; 
-                
-                ParticleSystem[] particleSystems = goalTransform.GetComponentsInChildren<ParticleSystem>(true);
-                foreach (ParticleSystem ps in particleSystems)
-                {
-                    if (ps.gameObject.name == "Confetti Explosion - Stars")
-                    {
-                        ps.Play();
-                    }
-                }
-
-                if (CameraController.Instance != null)
-                {
-                    CameraController.Instance.TargetSpecificBall(this.transform);
-                    CameraController.Instance.OnBallHitGoal();
+                    ps.Play();
                 }
             }
+        }
+
+        if (CameraController.Instance != null)
+        {
+            CameraController.Instance.TargetSpecificBall(this.transform);
+            CameraController.Instance.OnBallHitGoal();
         }
     }
 }

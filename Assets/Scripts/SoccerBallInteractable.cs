@@ -24,7 +24,7 @@ public class SoccerBallInteractable : MonoBehaviour, IInteractable
         if (closestGoal == null) return;
 
         Vector3 targetPosition = closestGoal.transform.position;
-        targetPosition.y += 1f;
+        targetPosition.y += 0.5f;
 
         Vector3 direction = (targetPosition - transform.position).normalized;
 
