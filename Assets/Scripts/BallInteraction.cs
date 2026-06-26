@@ -75,7 +75,16 @@ public class BallInteraction : MonoBehaviour
 
         Vector3 direction = (targetPosition - closestBall.transform.position).normalized;
         Vector3 force = direction * kickForce + Vector3.up * upwardKickForce;
-        rb.AddForce(force, ForceMode.Impulse);
+        
+        BallController ballController = closestBall.GetComponent<BallController>();
+        if (ballController != null)
+        {
+            ballController.PrepareAndKick(force);
+        }
+        else
+        {
+            rb.AddForce(force, ForceMode.Impulse);
+        }
 
         if (kickButton != null)
         {

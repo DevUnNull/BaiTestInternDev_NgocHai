@@ -29,12 +29,15 @@ public class SoccerBallInteractable : MonoBehaviour, IInteractable
         Vector3 direction = (targetPosition - transform.position).normalized;
 
         Vector3 force = direction * kickForce + Vector3.up * upwardKickForce;
-        rb.AddForce(force, ForceMode.Impulse);
 
         BallController ballController = GetComponent<BallController>();
         if (ballController != null)
         {
-            ballController.OnGetKicked();
+            ballController.PrepareAndKick(force);
+        }
+        else
+        {
+            rb.AddForce(force, ForceMode.Impulse);
         }
     }
 }

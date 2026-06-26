@@ -1,4 +1,5 @@
 using UnityEngine;
+using Cinemachine;
 
 public class BallController : MonoBehaviour
 {
@@ -12,14 +13,41 @@ public class BallController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-    public void OnGetKicked()
+    public void PrepareAndKick(Vector3 force)
     {
-        isKicked = true;
+        StartCoroutine(KickRoutine(force));
+    }
 
+    private System.Collections.IEnumerator KickRoutine(Vector3 force)
+    {
         if (CameraController.Instance != null)
         {
             CameraController.Instance.TargetSpecificBall(this.transform);
         }
+
+        yield return new WaitForSeconds(0.1f);
+
+        CinemachineBrain brain = Camera.main != null ? Camera.main.GetComponent<CinemachineBrain>() : null;
+        if (brain != null)
+        {
+            while (brain.IsBlending)
+            {
+                yield return null;
+            }
+        }
+        else
+        {
+            yield return new WaitForSeconds(1.0f);
+        }
+
+        yield return new WaitForSeconds(0.2f);
+
+        if (rb != null)
+        {
+            rb.AddForce(force, ForceMode.Impulse);
+        }
+
+        isKicked = true;
 
         if (monitorCoroutine != null) StopCoroutine(monitorCoroutine);
         monitorCoroutine = StartCoroutine(MonitorBallMovement());
