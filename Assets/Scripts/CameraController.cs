@@ -12,7 +12,6 @@ public class CameraController : MonoBehaviour
 
     private void Awake()
     {
-        // Setup Singleton
         if (Instance == null)
         {
             Instance = this;
@@ -22,14 +21,13 @@ public class CameraController : MonoBehaviour
             Destroy(gameObject);
         }
 
-        // Thêm component chống đâm xuống sàn cho vcamBall
         if (vcamBall != null)
         {
             CameraYClamp yClamp = vcamBall.GetComponent<CameraYClamp>();
             if (yClamp == null)
             {
                 yClamp = vcamBall.gameObject.AddComponent<CameraYClamp>();
-                yClamp.minY = 0.5f; // Đảm bảo camera không đâm xuống sàn (có thể điều chỉnh số này)
+                yClamp.minY = 0.5f; 
             }
         }
     }
@@ -40,7 +38,7 @@ public class CameraController : MonoBehaviour
         {
             vcamBall.Follow = ballTransform;
             vcamBall.LookAt = ballTransform;
-            vcamBall.Priority = 20; // Vượt mức ưu tiên của vcamCharacter (10)
+            vcamBall.Priority = 20; 
         }
     }
 
@@ -53,7 +51,7 @@ public class CameraController : MonoBehaviour
     {
         if (vcamBall != null)
         {
-            vcamBall.Priority = 5; // Giảm xuống thấp hơn vcamCharacter
+            vcamBall.Priority = 5; 
             vcamBall.Follow = null;
             vcamBall.LookAt = null;
         }
@@ -61,14 +59,14 @@ public class CameraController : MonoBehaviour
 
     private IEnumerator ResetCameraRoutine()
     {
-        yield return new WaitForSeconds(2f); // Đợi 2 giây
+        yield return new WaitForSeconds(2f); 
         ResetCamera();
     }
 }
 
 [ExecuteAlways]
 [SaveDuringPlay]
-[AddComponentMenu("")] // Hide in menu
+[AddComponentMenu("")] 
 public class CameraYClamp : CinemachineExtension
 {
     public float minY = 0.5f;
@@ -77,7 +75,6 @@ public class CameraYClamp : CinemachineExtension
         CinemachineVirtualCameraBase vcam,
         CinemachineCore.Stage stage, ref CameraState state, float deltaTime)
     {
-        // Chỉ giới hạn ở Body (sau khi tính toán Follow)
         if (stage == CinemachineCore.Stage.Body)
         {
             var pos = state.RawPosition;

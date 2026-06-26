@@ -70,18 +70,13 @@ public class BallInteraction : MonoBehaviour
         GameObject closestGoal = FindClosestGoal(closestBall.transform.position);
         if (closestGoal == null) return;
 
-        // Calculate direction to goal
         Vector3 targetPosition = closestGoal.transform.position;
-        // Adjust target position to center of the goal loosely (goals might have their pivot at the base)
         targetPosition.y += 1f; 
 
         Vector3 direction = (targetPosition - closestBall.transform.position).normalized;
-
-        // Apply force
         Vector3 force = direction * kickForce + Vector3.up * upwardKickForce;
         rb.AddForce(force, ForceMode.Impulse);
 
-        // Hide button immediately after kicking
         if (kickButton != null)
         {
             kickButton.gameObject.SetActive(false);

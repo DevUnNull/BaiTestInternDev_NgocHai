@@ -27,7 +27,6 @@ public class AutoKickController : MonoBehaviour
     {
         if (playerTransform == null) return;
 
-        // Find all active soccer balls in the scene
         SoccerBallInteractable[] balls = FindObjectsOfType<SoccerBallInteractable>();
         if (balls.Length == 0) return;
 
@@ -46,7 +45,6 @@ public class AutoKickController : MonoBehaviour
 
         if (furthestBall != null)
         {
-            // Trigger the kick physics on the furthest ball
             furthestBall.Interact(playerTransform.gameObject);
         }
     }

@@ -31,7 +31,6 @@ public class SoccerBallInteractable : MonoBehaviour, IInteractable
         Vector3 force = direction * kickForce + Vector3.up * upwardKickForce;
         rb.AddForce(force, ForceMode.Impulse);
 
-        // Notify BallController that this ball was kicked
         BallController ballController = GetComponent<BallController>();
         if (ballController != null)
         {

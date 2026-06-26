@@ -33,8 +33,7 @@ public class InteractionScanner : MonoBehaviour
     {
         if (currentInteractable != null)
         {
-            currentInteractable.Interact(gameObject);
-            // Optionally clear it after interaction, or let distance handling do it
+            currentInteractable.Interact(gameObject);   
             currentInteractable = null;
             OnInteractableOutOfRange?.Invoke();
         }
@@ -45,7 +44,6 @@ public class InteractionScanner : MonoBehaviour
         IInteractable closest = null;
         float minDistance = scanRadius;
 
-        // Using OverlapSphere is more efficient than FindObjectsOfType
         Collider[] colliders = Physics.OverlapSphere(transform.position, scanRadius);
         foreach (Collider col in colliders)
         {
